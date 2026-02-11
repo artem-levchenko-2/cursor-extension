@@ -61,6 +61,46 @@ export class PreviewFinder implements vscode.Disposable {
   }
 
   /**
+   * Search for a preview image by component name in a specific directory.
+   * Fast synchronous search — useful when the import resolved to a
+   * barrel/index file but the preview sits next to it by component name.
+   */
+  public findPreviewByNameInDir(
+    componentName: string,
+    dirPath: string,
+  ): string | undefined {
+    const cacheKey = `@dir:${componentName}:${dirPath}`;
+    if (this._cache.has(cacheKey)) {
+      return this._cache.get(cacheKey) ?? undefined;
+    }
+
+    let result: string | undefined;
+
+    // Convention A: ComponentName.preview.{ext}
+    for (const ext of PreviewFinder.IMAGE_EXTENSIONS) {
+      const candidate = path.join(dirPath, `${componentName}.preview${ext}`);
+      if (fs.existsSync(candidate)) {
+        result = candidate;
+        break;
+      }
+    }
+
+    // Convention B: __previews__/ComponentName.{ext}
+    if (!result) {
+      for (const ext of PreviewFinder.IMAGE_EXTENSIONS) {
+        const candidate = path.join(dirPath, '__previews__', `${componentName}${ext}`);
+        if (fs.existsSync(candidate)) {
+          result = candidate;
+          break;
+        }
+      }
+    }
+
+    this._cacheSet(cacheKey, result ?? null);
+    return result;
+  }
+
+  /**
    * Search the entire workspace for a preview image by component name.
    * This is the fallback when we cannot resolve the component's source file.
    *
