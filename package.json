@@ -1,0 +1,94 @@
+{
+  "name": "component-preview",
+  "displayName": "Component Preview",
+  "description": "Quick visual preview of UI components (TSX blocks) directly in the IDE without running the project or opening a browser.",
+  "version": "0.1.0",
+  "publisher": "component-preview",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:typescriptreact",
+    "onLanguage:typescript"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "componentPreview.componentTree",
+          "name": "Components",
+          "visibility": "visible"
+        },
+        {
+          "id": "componentPreview.panel",
+          "name": "Component Preview",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "componentPreview.showFromExplorer",
+        "title": "Preview Component",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "componentPreview.refreshTree",
+        "title": "Refresh Components",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "componentPreview.refreshTree",
+          "when": "view == componentPreview.componentTree",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "componentPreview.showFromExplorer",
+          "when": "view == componentPreview.componentTree",
+          "group": "inline"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "componentPreview.showFromExplorer",
+          "when": "resourceExtname == .tsx",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "componentPreview.showFromExplorer",
+          "when": "resourceExtname == .tsx",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "componentPreview.showFromExplorer",
+          "when": "editorLangId == typescriptreact"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
