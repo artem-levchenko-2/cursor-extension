@@ -4,6 +4,10 @@
   "description": "Quick visual preview of UI components (TSX blocks) directly in the IDE without running the project or opening a browser.",
   "version": "0.1.0",
   "publisher": "component-preview",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/artem-levchenko-2/cursor-extension.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
