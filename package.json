@@ -2,7 +2,7 @@
   "name": "component-preview",
   "displayName": "Component Preview",
   "description": "Quick visual preview of UI components (TSX blocks) directly in the IDE without running the project or opening a browser.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "artem-l",
   "icon": "preview-ext-2.png",
   "license": "MIT",
