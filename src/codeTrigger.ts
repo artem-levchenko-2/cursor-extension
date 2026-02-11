@@ -30,14 +30,19 @@ export function registerCodeTrigger(
     (event: vscode.TextEditorSelectionChangeEvent) => {
       const editor = event.textEditor;
 
-      // Only handle TypeScript / TSX / JSX files
+      // Only handle files that may contain component references
       const langId = editor.document.languageId;
-      if (
-        langId !== 'typescriptreact' &&
-        langId !== 'typescript' &&
-        langId !== 'javascriptreact' &&
-        langId !== 'javascript'
-      ) {
+      const supportedLangs = new Set([
+        'typescriptreact',
+        'typescript',
+        'javascriptreact',
+        'javascript',
+        'astro',
+        'vue',
+        'svelte',
+        'mdx',
+      ]);
+      if (!supportedLangs.has(langId)) {
         return;
       }
 

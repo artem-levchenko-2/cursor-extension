@@ -188,12 +188,74 @@ function resolveFromImports(
       const importPath = match[1];
       const resolved = resolveImportPath(importPath, document);
       if (resolved) {
-        return resolved;
+        // If the resolved file is a barrel/index file, try to follow
+        // the re-export chain to the actual component file.
+        const actual = followBarrelExport(componentName, resolved);
+        return actual ?? resolved;
       }
     }
   }
 
   return undefined;
+}
+
+/**
+ * If `resolvedPath` points to a barrel/index file, read it and look for
+ * a re-export of `componentName`.  Follow up to 3 levels deep to handle
+ * chained re-exports.
+ *
+ * Example barrel content:
+ *   export { Hero8 } from './hero8/Hero8';
+ *
+ * Returns the absolute path to the final component file, or undefined
+ * if no matching re-export was found.
+ */
+function followBarrelExport(
+  componentName: string,
+  resolvedPath: string,
+  depth: number = 0,
+): string | undefined {
+  // Guard against infinite loops
+  if (depth > 3) {
+    return undefined;
+  }
+
+  // Only follow index/barrel files
+  const basename = path.basename(resolvedPath, path.extname(resolvedPath));
+  if (basename !== 'index') {
+    return undefined;
+  }
+
+  let content: string;
+  try {
+    content = fs.readFileSync(resolvedPath, 'utf-8');
+  } catch {
+    return undefined;
+  }
+
+  // Match re-export patterns:
+  //   export { ComponentName } from './path'
+  //   export { Something as ComponentName } from './path'
+  //   export { ComponentName, OtherThing } from './path'
+  const reExportPattern = new RegExp(
+    `export\\s+\\{[^}]*\\b${componentName}\\b[^}]*\\}\\s+from\\s+['"]([^'"]+)['"]`,
+  );
+  const match = reExportPattern.exec(content);
+  if (!match) {
+    return undefined;
+  }
+
+  const reExportPath = match[1];
+  const barrelDir = path.dirname(resolvedPath);
+  const candidate = resolveWithExtensions(path.resolve(barrelDir, reExportPath));
+
+  if (!candidate) {
+    return undefined;
+  }
+
+  // The resolved file might itself be another barrel — recurse
+  const deeper = followBarrelExport(componentName, candidate, depth + 1);
+  return deeper ?? candidate;
 }
 
 /**

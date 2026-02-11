@@ -19,7 +19,13 @@
   ],
   "activationEvents": [
     "onLanguage:typescriptreact",
-    "onLanguage:typescript"
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:javascript",
+    "onLanguage:astro",
+    "onLanguage:vue",
+    "onLanguage:svelte",
+    "onLanguage:mdx"
   ],
   "main": "./out/extension.js",
   "contributes": {
