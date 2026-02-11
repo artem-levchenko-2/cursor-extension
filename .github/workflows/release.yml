@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Package extension
-        run: npx vsce package
+        run: npx ovsx package
 
       - name: Get .vsix filename
         id: vsix
@@ -38,7 +38,5 @@ jobs:
           files: ${{ steps.vsix.outputs.filename }}
           generate_release_notes: true
 
-      - name: Publish to VS Code Marketplace
-        run: npx vsce publish
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish to Open VSX (Cursor IDE)
+        run: npx ovsx publish ${{ steps.vsix.outputs.filename }} -p ${{ secrets.OVSX_PAT }}

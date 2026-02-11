@@ -11,7 +11,7 @@
 3. [Розробка та дебаг](#3-розробка-та-дебаг)
 4. [Випуск нової версії](#4-випуск-нової-версії)
 5. [CI/CD Pipeline](#5-cicd-pipeline)
-6. [Публікація на Marketplace](#6-публікація-на-marketplace)
+6. [Публікація на Open VSX](#6-публікація-на-open-vsx)
 7. [Корисні команди](#7-корисні-команди)
 
 ---
@@ -34,7 +34,7 @@ npm run compile
 
 - Node.js 18+
 - npm 9+
-- Cursor IDE або VS Code 1.85+
+- Cursor IDE 0.30+
 
 ---
 
@@ -53,13 +53,13 @@ cursor-extension/
 │   └── explorerTrigger.ts      ← Тригер з контекстного меню
 ├── out/                        ← Скомпільований JS (генерується)
 ├── .github/workflows/
-│   └── release.yml             ← CI/CD: збірка + публікація
+│   └── release.yml             ← CI/CD: збірка + публікація на Open VSX
 ├── scripts/
-│   └── update-extension.sh     ← Скрипт оновлення для команди
+│   └── update-extension.sh     ← Скрипт оновлення через .vsix
 ├── package.json                ← Маніфест розширення
 ├── tsconfig.json               ← Конфігурація TypeScript
 ├── .vscodeignore               ← Файли, що виключаються з .vsix
-├── preview-ext.png             ← Іконка розширення (132x132)
+├── preview-ext-2.png           ← Іконка розширення
 ├── LICENSE                     ← MIT ліцензія
 ├── README.md                   ← Документація для команди
 └── DEVELOPMENT.md              ← Цей файл
@@ -123,7 +123,7 @@ git push && git push --tags
 - Скомпілює TypeScript
 - Збере `.vsix` файл
 - Створить GitHub Release з `.vsix`
-- Опублікує на VS Code Marketplace
+- Опублікує на Open VSX (Cursor IDE)
 
 ### Якщо є незакомічені зміни
 
@@ -141,7 +141,7 @@ git push && git push --tags
 
 - GitHub Actions: https://github.com/artem-levchenko-2/cursor-extension/actions
 - GitHub Releases: https://github.com/artem-levchenko-2/cursor-extension/releases
-- Marketplace: https://marketplace.visualstudio.com/items?itemName=artem-l.component-preview
+- Open VSX: https://open-vsx.org/extension/artem-l/component-preview
 
 ---
 
@@ -158,29 +158,29 @@ Pipeline запускається при пуші тегу `v*` (наприкл�
 1. Checkout коду
 2. Налаштування Node.js 20
 3. `npm ci` — встановлення залежностей
-4. `npx vsce package` — збірка .vsix (включає `npm run compile` через prepublish)
+4. `npx ovsx package` — збірка .vsix (включає `npm run compile` через prepublish)
 5. Створення GitHub Release з .vsix як asset
-6. `npx vsce publish` — публікація на Marketplace
+6. `npx ovsx publish` — публікація на Open VSX (Cursor IDE)
 
 ### Секрети
 
-| Секрет | Опис |
-|---|---|
-| `VSCE_PAT` | Personal Access Token для VS Code Marketplace |
+| Секрет | Опис | Де створити |
+|---|---|---|
+| `OVSX_PAT` | Access Token для Open VSX | open-vsx.org → Settings → Access Tokens |
 
 Секрет налаштовується у: GitHub repo → Settings → Secrets and variables → Actions
 
-### Оновлення PAT
+### Оновлення токена
 
-PAT має термін дії (до 1 року). Коли закінчиться:
+`OVSX_PAT` не має терміну дії, але якщо потрібно перевипустити:
 
-1. Перейдіть в Azure DevOps → User Settings → Personal Access Tokens
-2. Створіть новий токен (scope: Marketplace > Manage)
-3. Оновіть секрет `VSCE_PAT` у GitHub
+1. Перейдіть на open-vsx.org → Settings → Access Tokens
+2. Створіть новий токен
+3. Оновіть секрет `OVSX_PAT` у GitHub
 
 ---
 
-## 6. Публікація на Marketplace
+## 6. Публікація на Open VSX
 
 ### Поточні дані
 
@@ -189,21 +189,22 @@ PAT має термін дії (до 1 року). Коли закінчитьс�
 | Publisher ID | `artem-l` |
 | Extension ID | `artem-l.component-preview` |
 | Репозиторій | `artem-levchenko-2/cursor-extension` |
+| Open VSX | https://open-vsx.org/extension/artem-l/component-preview |
 
 ### Ручна публікація (якщо CI не працює)
 
 ```bash
-# Авторизуватись
-npx vsce login artem-l
+# Зібрати .vsix
+npx ovsx package
 
-# Зібрати та опублікувати
-npx vsce publish
+# Опублікувати на Open VSX
+npx ovsx publish component-preview-*.vsix -p ВАШ_OVSX_ТОКЕН
 ```
 
 ### Ручна збірка .vsix без публікації
 
 ```bash
-npx vsce package
+npx ovsx package
 ```
 
 ---
@@ -218,10 +219,10 @@ npm run compile
 npm run watch
 
 # Збірка .vsix
-npx vsce package
+npx ovsx package
 
 # Перевірити що потрапить у .vsix
-npx vsce ls
+npx ovsx ls
 
 # Випуск патч-версії (повний цикл)
 npm version patch && git push && git push --tags

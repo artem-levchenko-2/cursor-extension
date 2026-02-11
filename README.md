@@ -1,17 +1,17 @@
 # Component Preview
 
-Розширення для Cursor IDE та VS Code, яке показує візуальні прев'ю UI-компонентів (TSX блоків) прямо в IDE — без запуску проєкту чи відкриття браузера.
+Розширення для Cursor IDE, яке показує візуальні прев'ю UI-компонентів (TSX блоків) прямо в IDE — без запуску проєкту чи відкриття браузера.
 
 ---
 
 ## Встановлення
 
-1. Відкрийте **Cursor IDE** (або VS Code)
+1. Відкрийте **Cursor IDE**
 2. Перейдіть у **Extensions** (`Cmd+Shift+X`)
-3. Знайдіть **"Component Preview"**
+3. Знайдіть **"Component Preview"** (publisher: artem-l)
 4. Натисніть **Install**
 
-Розширення оновлюється автоматично через Marketplace.
+Розширення доступне на [Open VSX](https://open-vsx.org/extension/artem-l/component-preview). Оновлення відбуваються автоматично.
 
 ---
 
@@ -139,7 +139,6 @@ const components = ['Hero03', 'Feature17', 'Feature50'];
 | Середовище | Версія |
 |---|---|
 | Cursor IDE | 0.30+ |
-| VS Code | 1.85+ |
 
 ## Підтримувані формати зображень
 
