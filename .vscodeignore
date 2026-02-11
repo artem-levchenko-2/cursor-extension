@@ -3,6 +3,8 @@
 src/**
 node_modules/**
 test-fixtures/**
+scripts/**
+.github/**
 .gitignore
 tsconfig.json
 **/*.ts
